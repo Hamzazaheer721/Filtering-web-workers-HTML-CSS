@@ -1,17 +1,14 @@
 let dataResponse = "";
 var worker = new Worker('/dist/worker.js')
-var el = document.getElementById("search-button");
-if (el) {
-  el.addEventListener("click", fetchData)
-}
-function fetchData() {
-  fetch('/json/generated.json').then((res) => {
-    return res.json();
-  }).then(data => {
-    let temp = ""
-    worker.postMessage(data)
-    worker.onmessage = function (e){
-      const _data = e.data;
+
+fetch('/json/generated.json').then((res) => {
+  return res.json();
+}).then(data => {
+  let temp = "";
+  worker.postMessage([data, "first"])
+  worker.onmessage = function (e){
+    if(e.data[1] === 'first'){
+      const _data = e.data[0];
       if(_data.length > 0){
         _data.forEach((u)=>{
           temp += "<tr>"
@@ -23,5 +20,9 @@ function fetchData() {
         document.getElementById("data").innerHTML = temp;
       }
     }
-  })
-}
+    else{
+      
+    }
+    
+  }
+})
