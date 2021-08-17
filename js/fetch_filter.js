@@ -1,6 +1,6 @@
-let dataResponse = "";
 var worker = new Worker('/dist/worker.js')
-
+let _data;
+//fetching
 fetch('/json/generated.json').then((res) => {
   return res.json();
 }).then(data => {
@@ -8,7 +8,7 @@ fetch('/json/generated.json').then((res) => {
   worker.postMessage([data, "first"])
   worker.onmessage = function (e){
     if(e.data[1] === 'first'){
-      const _data = e.data[0];
+      _data = e.data[0];
       if(_data.length > 0){
         _data.forEach((u)=>{
           temp += "<tr>"
@@ -20,9 +20,29 @@ fetch('/json/generated.json').then((res) => {
         document.getElementById("data").innerHTML = temp;
       }
     }
-    else{
+  }
+})
+
+//filtering 
+var input = document.getElementById("search-field");
+document.getElementById('search-field').addEventListener("keyup", ()=>{
+  if(input.value.length > 0){
+    worker.postMessage([input.value,'second',_data])
+    worker.onmessage = function(e){
       
+      if(e.data[1] === 'second'){
+        _data = e.data[0];
+        console.log("data received",_data)
+        let temp = ""
+        _data.forEach((u)=>{    
+          temp += "<tr>"
+          temp += "<td>" + u.age + "</td>"
+          temp += "<td>" + u.name + "</td>"
+          temp += "<td>" + u.gender + "</td>"
+          temp += "<td>" + u.email + "</td></tr>"
+        })
+        document.getElementById("data").innerHTML = temp;      
+      }
     }
-    
   }
 })
