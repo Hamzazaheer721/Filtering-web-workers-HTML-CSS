@@ -1,47 +1,46 @@
 var worker = new Worker('/dist/worker.js')
-let _data;
+let jsonData;
+
 //fetching
 fetch('/json/generated.json').then((res) => {
   return res.json();
 }).then(data => {
-  let temp = "";
-  worker.postMessage([data, "first"])
-  worker.onmessage = function (e){
-    if(e.data[1] === 'first'){
-      _data = e.data[0];
-      if(_data.length > 0){
-        _data.forEach((u)=>{
-          temp += "<tr>"
-          temp += "<td>" + u.age + "</td>"
-          temp += "<td>" + u.name + "</td>"
-          temp += "<td>" + u.gender + "</td>"
-          temp += "<td>" + u.email + "</td></tr>"
-        })
-        document.getElementById("data").innerHTML = temp;
-      }
+  jsonData = data;
+  worker.postMessage([jsonData, "first"]);
+  worker.onmessage = function(e){
+    if(e.data[1] === "first"){
+      jsonData = e.data[0];
+      let _data = e.data[0];
+      buildTable(_data)
     }
   }
 })
 
-//filtering 
+//build Table
+const buildTable = (__data) => {
+  var table = document.getElementById("data");
+  table.innerText = "";
+  for (let i = 0; i < __data.length; i++){
+    var row =  `
+    <tr>
+      <td> ${__data[i].age}</td>
+      <td> ${__data[i].name}</td>
+      <td> ${__data[i].gender}</td>         
+      <td> ${__data[i].email}</td> 
+    </tr>  
+    `
+    table.innerHTML += row;
+  }
+}
+
+// //filtering 
 var input = document.getElementById("search-field");
-document.getElementById('search-field').addEventListener("keyup", ()=>{
-  if(input.value.length > 0){
-    worker.postMessage([input.value,'second',_data])
-    worker.onmessage = function(e){
-      
-      if(e.data[1] === 'second'){
-        _data = e.data[0];
-        let temp = ""
-        _data.forEach((u)=>{    
-          temp += "<tr>"
-          temp += "<td>" + u.age + "</td>"
-          temp += "<td>" + u.name + "</td>"
-          temp += "<td>" + u.gender + "</td>"
-          temp += "<td>" + u.email + "</td></tr>"
-        })
-        document.getElementById("data").innerHTML = temp;      
-      }
+document.getElementById('search-field').addEventListener("keyup", ()=>{ 
+  worker.postMessage([input.value,'second',jsonData])
+  worker.onmessage = function(e){    
+    if(e.data[1] === 'second'){
+      let _data = e.data[0];
+      buildTable(_data)      
     }
   }
 })
