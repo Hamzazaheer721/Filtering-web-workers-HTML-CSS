@@ -21,7 +21,6 @@ onmessage = function(e){
 				dataArray.push(data[i])
 			}
 		}
-		console.log("data being sent :", dataArray)
 		postMessage([dataArray,'second']);
 	}
 	

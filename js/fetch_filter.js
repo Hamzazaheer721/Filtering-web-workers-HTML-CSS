@@ -32,7 +32,6 @@ document.getElementById('search-field').addEventListener("keyup", ()=>{
       
       if(e.data[1] === 'second'){
         _data = e.data[0];
-        console.log("data received",_data)
         let temp = ""
         _data.forEach((u)=>{    
           temp += "<tr>"
