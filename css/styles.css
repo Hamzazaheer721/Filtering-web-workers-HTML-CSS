@@ -1,3 +1,4 @@
+
 body{
     box-sizing: border-box;
     font-family: "Segoe UI", "Roboto";
@@ -11,16 +12,24 @@ body{
 #button-container{
     flex: 0.3
 }
-#search-button{
-    color: white;
-    background-color: #24A0ED;
-    height: 40px;
-    width: 120px;
-    border-radius: 10px;
-    white-space: normal;
-    word-wrap: break-word;
-
+#search-field{
+    font-family: inherit;
+    width: 300px;
+    border: 0;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 1.3rem;
+    color: #fff;
+    padding: 7px 0;
+    background: transparent;
 }
+#search-field::placeholder {
+  color:white;
+  font-size: 20px;  
+  padding: 10px;
+  opacity: 0.7; 
+}
+
 #container{
     background: linear-gradient(45deg, #2193b0, #5f2c82);
     margin-top: 50px;
